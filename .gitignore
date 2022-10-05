@@ -50,3 +50,9 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# lex.yy.c
+NanoC Analyzer/a.out
+NanoC Analyzer/lex.yy.c
+NanoC Analyzer/out.txt
+
