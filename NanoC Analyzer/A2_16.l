@@ -15,8 +15,8 @@ VOID "void"
 IDENTIFIER [a-zA-Z][a-zA-Z0-9|_]*
 CONSTANT [[+|-][0-9]+|[0-9]*|[a-zA-Z0-9]*]
 SEMICOLON [;]
-PUNCTUATOR [;|,|(||)|\[|\]|{|}|+|-|*|/|<|<=|>|>=|==|!=|=]
-STRINGLITERAL ["[a-zA-Z0-9]*\0"]
+PUNCTUATOR [;|,|(||)|\[|\]|{|}|+|-|*|/|<|<=|>|>=|==|!=|=]|"=="
+STRINGLITERAL \"(\\.|[^"\\])*\"
 ESCAPE [\\]['|''|?|\\|a|b|f|n|r|t|v]
 MULTICOMMENT "/*"[\n.]*"*/"
 
@@ -39,9 +39,9 @@ SINGLECOMMENT [//][a-zA-Z0-9]+[\\n]
 {IF} {printf("<KEYWORD, if> ");}
 {RETURN} {printf("<KEYWORD, return> ");}
 {VOID} {printf("<KEYWORD, void> ");}
+{STRINGLITERAL} {printf("<STRING, %s> ", yytext);}
 {IDENTIFIER} {printf("<IDENTIFIER, %s> ", yytext);}
 {CONSTANT} {printf("<CONSTANT, %s> ", yytext);}
 {SEMICOLON} {printf("<PUNCTUATOR, %s> ", yytext);}
 {PUNCTUATOR} {printf("<PUNCTUATOR, %s> ", yytext);}
-[ ] {printf("");}
 %%
