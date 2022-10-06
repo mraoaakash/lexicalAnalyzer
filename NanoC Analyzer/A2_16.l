@@ -18,8 +18,20 @@ SEMICOLON [;]
 PUNCTUATOR [;|,|(||)|\[|\]|{|}|+|-|*|/|<|<=|>|>=|==|!=|=]
 STRINGLITERAL ["[a-zA-Z0-9]*\0"]
 ESCAPE [\\]['|''|?|\\|a|b|f|n|r|t|v]
+MULTICOMMENT "/*"[\n.]*"*/"
+
+SINGLECOMMENT [//][a-zA-Z0-9]+[\\n]
+%x C_COMMENT
+%x C_SL_COMMENT
 
 %%
+"/*"            { printf("<COMMENT, \"%s", yytext); BEGIN(C_COMMENT); }
+<C_COMMENT>"*/" { printf("%s\">", yytext); BEGIN(INITIAL); }
+<C_COMMENT>\n   { printf("%s", yytext); }
+<C_COMMENT>.    { printf("%s", yytext);}
+"//"            { printf("<COMMENT, \"%s", yytext); BEGIN(C_SL_COMMENT); }
+<C_SL_COMMENT>\n   { printf("\">"); BEGIN(INITIAL); }
+<C_SL_COMMENT>.    { printf("%s", yytext);}
 {INT} {printf("<KEYWORD, int> ");}
 {CHAR} {printf("<KEYWORD, char> ");}
 {ELSE} {printf("<KEYWORD, else> ");}

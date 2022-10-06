@@ -1,3 +1,7 @@
+/*
+    abc abc
+    bac bac
+*/
 int f_odd(int);
 int f_even(int);
 int fibonacci(int n) {
@@ -10,7 +14,7 @@ int f_even(int n) {
     return (n == 0)? 0: f_odd(n-1) + f_even(n-2);
 }
 int main() {
-    int n = 10;
+    int n = 10; // 10th fibonacci number
     int r;
     r = fibonacci(n);
     printStr("fibo(");
