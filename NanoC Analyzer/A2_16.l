@@ -13,16 +13,16 @@ IF "if"
 RETURN "return"
 VOID "void"
 IDENTIFIER [a-zA-Z][a-zA-Z0-9|_]*
-CONSTANT [[+|-][0-9]+|[0-9]*|[a-zA-Z0-9]*]
+PUNCTUATOR [;|,|(|)|\[|\]|{|}|+|\-|*|/|<|>|=]|"<="|">="|"!="|"=="
+CONSTANT [[+|\-][1-9]+|[1-9]*|[a-zA-Z0-9]*]|[0]
 SEMICOLON [;]
-PUNCTUATOR [;|,|(||)|\[|\]|{|}|+|-|*|/|<|<=|>|>=|==|!=|=]|"=="
 STRINGLITERAL \"(\\.|[^"\\])*\"
 ESCAPE [\\]['|''|?|\\|a|b|f|n|r|t|v]
 MULTICOMMENT "/*"[\n.]*"*/"
 WS [ \t\r]+
 
 SINGLECOMMENT [//][a-zA-Z0-9]+[\\n]
-%x C_COMMENT
+%x C_COMMENT    
 %x C_SL_COMMENT
 
 %%
@@ -33,7 +33,8 @@ SINGLECOMMENT [//][a-zA-Z0-9]+[\\n]
 "//"            { BEGIN(C_SL_COMMENT); }
 <C_SL_COMMENT>\n    {}
 <C_SL_COMMENT>. {}
-{INT} {printf("<KEYWORD, int> ");}
+
+{INT} {printf("<KEYWORD, int> ");}      
 {CHAR} {printf("<KEYWORD, char> ");}
 {ELSE} {printf("<KEYWORD, else> ");}
 {FOR} {printf("<KEYWORD, for> ");}
