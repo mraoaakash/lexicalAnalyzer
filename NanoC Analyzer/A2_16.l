@@ -12,16 +12,17 @@ FOR "for"
 IF "if"
 RETURN "return"
 VOID "void"
+INTEGERS [1-9]+[0-9]*
 IDENTIFIER [a-zA-Z][a-zA-Z0-9|_]*
-PUNCTUATOR [;|,|(|)|\[|\]|{|}|+|\-|*|/|<|>|=]|"<="|">="|"!="|"=="
+PUNCTUATOR [;|,|(|)|\[|\]|{|}|+|\-|*|/|<|>|=|\\]|"<="|">="|"!="|"=="|"#"
 SEMICOLON [;]
-STRINGLITERAL \"(\\.|[^"\\])*\"
 ESCAPE [\\]['|''|?|\\|a|b|f|n|r|t|v]
 MULTICOMMENT "/*"[\n.]*"*/"
-WS [" " | \t\r]+
+WS [\t\r]+
+ZERO [0]
 NEWLINE [\n]+
 
-%x CONSTANT
+%x STRINGS
 %x MULTILINE_COMMENT_NC    
 %x SINGLELINE_COMMENT_NC
 
@@ -30,24 +31,29 @@ NEWLINE [\n]+
 <MULTILINE_COMMENT_NC>"*/" {BEGIN(INITIAL); }
 <MULTILINE_COMMENT_NC>\n   {}
 <MULTILINE_COMMENT_NC>.    {}
-"//"            { BEGIN(SINGLELINE_COMMENT_NC); }
-<SINGLELINE_COMMENT_NC>\n    {}
-<SINGLELINE_COMMENT_NC>. {}
-[+|\-][1-9]+|[1-9]*|[a-zA-Z0-9]*] {printf("<CONSTANT, \"%s", yytext); BEGIN(CONSTANT); }
-<CONSTANT>[;|,|(|)|\[|\]|{|}|+|\-|*|/|<|>|=]|"<="|">="|"!="|"==" {printf("\">");printf("<PUNCTUATOR, %s>", yytext); BEGIN(INITIAL);}
-<CONSTANT>. {printf("%s", yytext);}
 
-{INT} {printf("<KEYWORD, int> ");}      
-{CHAR} {printf("<KEYWORD, char> ");}
-{ELSE} {printf("<KEYWORD, else> ");}
-{FOR} {printf("<KEYWORD, for> ");}
-{IF} {printf("<KEYWORD, if> ");}
+"//"            { BEGIN(SINGLELINE_COMMENT_NC); }
+<SINGLELINE_COMMENT_NC>\n    { printf("\n"); BEGIN(INITIAL); }
+<SINGLELINE_COMMENT_NC>. {}
+
+"\""            { printf("<STRING CONSTANT, %s", yytext); BEGIN(STRINGS); }
+<STRINGS>"\""   { printf("\">"); BEGIN(INITIAL); }
+<STRINGS>\n     { printf("\n"); }
+<STRINGS>.      { printf("%s", yytext);}
+
+
+{ZERO} {printf("<INTEGER CONSTANT, \"0\">");}
+{INT} {printf("<KEYWORD, \"int\"> ");}      
+{CHAR} {printf("<KEYWORD, \"char\"> ");}
+{ELSE} {printf("<KEYWORD, \"else\"> ");}
+{FOR} {printf("<KEYWORD, \"for\"> ");}
+{IF} {printf("<KEYWORD, \"if\"> ");}
+{INTEGERS} {printf("<INTEGER CONSTANT, \"%s\"> ", yytext);}
 {RETURN} {printf("<KEYWORD, return> ");}
 {VOID} {printf("<KEYWORD, void> ");}
-{STRINGLITERAL} {printf("<STRING LITERAL, %s> ", yytext);}
-{IDENTIFIER} {printf("<IDENTIFIER, %s> ", yytext);}
-{SEMICOLON} {printf("<PUNCTUATOR, %s> ", yytext);}
-{PUNCTUATOR} {printf("<PUNCTUATOR, %s> ", yytext);}
+{IDENTIFIER} {printf("<IDENTIFIER, \"%s\"> ", yytext);}
+{SEMICOLON} {printf("<PUNCTUATOR, \"%s\"> ", yytext);}
+{PUNCTUATOR} {printf("<PUNCTUATOR, \"%s\"> ", yytext);}
 {NEWLINE} {printf("\n");}
 {WS}    {}
 %%

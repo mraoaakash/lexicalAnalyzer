@@ -1,8 +1,12 @@
-/*
-    abc abc
-    bac bac
-*/
-void def(){
-    printf("Aakash Rao\0");
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(){
+    print("Hello World!");
+    char *p = malloc(0000100);
+    p = "Hello World!";
+    printf("%s", p);
+    free(p);
+
+    int a = 0;
 }
-int a[100][100] = {0};
