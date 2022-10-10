@@ -14,25 +14,28 @@ RETURN "return"
 VOID "void"
 IDENTIFIER [a-zA-Z][a-zA-Z0-9|_]*
 PUNCTUATOR [;|,|(|)|\[|\]|{|}|+|\-|*|/|<|>|=]|"<="|">="|"!="|"=="
-CONSTANT [[+|\-][1-9]+|[1-9]*|[a-zA-Z0-9]*]|[0]
 SEMICOLON [;]
 STRINGLITERAL \"(\\.|[^"\\])*\"
 ESCAPE [\\]['|''|?|\\|a|b|f|n|r|t|v]
 MULTICOMMENT "/*"[\n.]*"*/"
-WS [ \t\r]+
+WS [" " | \t\r]+
+NEWLINE [\n]+
 
-SINGLECOMMENT [//][a-zA-Z0-9]+[\\n]
-%x C_COMMENT    
-%x C_SL_COMMENT
+%x CONSTANT
+%x MULTILINE_COMMENT_NC    
+%x SINGLELINE_COMMENT_NC
 
 %%
-"/*"            {BEGIN(C_COMMENT); }
-<C_COMMENT>"*/" {BEGIN(INITIAL); }
-<C_COMMENT>\n   {}
-<C_COMMENT>.    {}
-"//"            { BEGIN(C_SL_COMMENT); }
-<C_SL_COMMENT>\n    {}
-<C_SL_COMMENT>. {}
+"/*"            {BEGIN(MULTILINE_COMMENT_NC); }
+<MULTILINE_COMMENT_NC>"*/" {BEGIN(INITIAL); }
+<MULTILINE_COMMENT_NC>\n   {}
+<MULTILINE_COMMENT_NC>.    {}
+"//"            { BEGIN(SINGLELINE_COMMENT_NC); }
+<SINGLELINE_COMMENT_NC>\n    {}
+<SINGLELINE_COMMENT_NC>. {}
+[+|\-][1-9]+|[1-9]*|[a-zA-Z0-9]*] {printf("<CONSTANT, \"%s", yytext); BEGIN(CONSTANT); }
+<CONSTANT>[;|,|(|)|\[|\]|{|}|+|\-|*|/|<|>|=]|"<="|">="|"!="|"==" {printf("\">");printf("<PUNCTUATOR, %s>", yytext); BEGIN(INITIAL);}
+<CONSTANT>. {printf("%s", yytext);}
 
 {INT} {printf("<KEYWORD, int> ");}      
 {CHAR} {printf("<KEYWORD, char> ");}
@@ -41,10 +44,10 @@ SINGLECOMMENT [//][a-zA-Z0-9]+[\\n]
 {IF} {printf("<KEYWORD, if> ");}
 {RETURN} {printf("<KEYWORD, return> ");}
 {VOID} {printf("<KEYWORD, void> ");}
-{STRINGLITERAL} {printf("<STRING, %s> ", yytext);}
+{STRINGLITERAL} {printf("<STRING LITERAL, %s> ", yytext);}
 {IDENTIFIER} {printf("<IDENTIFIER, %s> ", yytext);}
-{CONSTANT} {printf("<CONSTANT, %s> ", yytext);}
 {SEMICOLON} {printf("<PUNCTUATOR, %s> ", yytext);}
 {PUNCTUATOR} {printf("<PUNCTUATOR, %s> ", yytext);}
+{NEWLINE} {printf("\n");}
 {WS}    {}
 %%

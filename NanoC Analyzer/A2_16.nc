@@ -2,4 +2,7 @@
     abc abc
     bac bac
 */
-00
+void def(){
+    printf("Aakash Rao\0");
+}
+int a[100][100] = {0};
