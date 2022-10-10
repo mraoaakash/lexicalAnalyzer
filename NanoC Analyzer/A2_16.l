@@ -18,7 +18,7 @@ PUNCTUATOR [;|,|(|)|\[|\]|{|}|+|\-|*|/|<|>|=|\\]|"<="|">="|"!="|"=="|"#"
 SEMICOLON [;]
 ESCAPE [\\]['|''|?|\\|a|b|f|n|r|t|v]
 MULTICOMMENT "/*"[\n.]*"*/"
-WS [\t\r]+
+WS [\t\r\n]*
 ZERO [0]
 NEWLINE [\n]+
 
@@ -54,6 +54,5 @@ NEWLINE [\n]+
 {IDENTIFIER} {printf("<IDENTIFIER, \"%s\"> ", yytext);}
 {SEMICOLON} {printf("<PUNCTUATOR, \"%s\"> ", yytext);}
 {PUNCTUATOR} {printf("<PUNCTUATOR, \"%s\"> ", yytext);}
-{NEWLINE} {printf("\n");}
-{WS}    {}
+{WS}    {printf("\n");}
 %%
