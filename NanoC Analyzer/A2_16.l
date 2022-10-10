@@ -20,7 +20,6 @@ ESCAPE [\\]['|''|?|\\|a|b|f|n|r|t|v]
 MULTICOMMENT "/*"[\n.]*"*/"
 WS [\t\r\n]*
 ZERO [0]
-NEWLINE [\n]+
 
 %x STRINGS
 %x MULTILINE_COMMENT_NC    
