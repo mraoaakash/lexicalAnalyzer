@@ -77,6 +77,5 @@ SEMICOLON [;]
 {SEMICOLON} {printf("<PUNCTUATOR, \"%s\"> ", yytext);}
 {PUNCTUATOR} {printf("<PUNCTUATOR, \"%s\"> ", yytext);}
 {WS}+    {}
-
 .       { printf(" lexical error in Line : %d \n ", line_num); exit(1); }
 %%
